@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Instalar dependências do Robô
+      - name: Instalar dependências exclusivas do Robô
         run: |
           pip install streamlit pandas playwright beautifulsoup4
           playwright install chromium
@@ -24,10 +24,10 @@ jobs:
       - name: Executar Scraper
         run: python scraper.py
 
-      - name: Salvar dados atualizados
+      - name: Salvar dados atualizados no repositório
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add dados.json
-          git commit -m "Dados atualizados pelo robô" || echo "Sem mudanças"
+          git commit -m "Dados atualizados pelo robô [skip ci]" || echo "Sem mudanças"
           git push
