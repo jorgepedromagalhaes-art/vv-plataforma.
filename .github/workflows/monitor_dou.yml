@@ -2,14 +2,13 @@ name: Executar Monitoramento DOU
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 5 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout do código
+      - name: Checkout código
         uses: actions/checkout@v4
 
       - name: Configurar Python
@@ -17,21 +16,18 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Instalar dependências
+      - name: Instalar dependências do Robô
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Instalar Navegador Playwright
-        run: |
+          pip install streamlit pandas playwright beautifulsoup4
           playwright install chromium
 
-      - name: Executar o Scraper do DOU
+      - name: Executar Scraper
         run: python scraper.py
 
-      - name: Salvar resultados no repositório
+      - name: Salvar dados atualizados
         run: |
-          git config --global user.name 'DOU Bot'
-          git config --global user.email 'bot@github.com'
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add dados.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Atualização automática DOU" && git push)
+          git commit -m "Dados atualizados pelo robô" || echo "Sem mudanças"
+          git push
